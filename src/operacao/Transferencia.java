@@ -5,26 +5,27 @@ import excecao.ContaBloqueadaException;
 import excecao.SaldoInsuficienteException;
 import excecao.ValorInvalidoException;
 
-/**
- * Implementação da operação de Transferência entre contas.
- */
-public class Transferencia extends Operacao {
-    private Conta contaOrigem;
-    private Conta contaDestino;
+public class Transferencia {
+    private Conta origem;
+    private Conta destino;
+    private double valor;
 
-    public Transferencia(Conta contaOrigem, Conta contaDestino, double valor) {
-        super(valor, "Transferência entre contas");
-        this.contaOrigem = contaOrigem;
-        this.contaDestino = contaDestino;
+    public Transferencia(Conta origem, Conta destino, double valor) {
+        this.origem = origem;
+        this.destino = destino;
+        this.valor = valor;
     }
 
-    @Override
-    public void executar() throws SaldoInsuficienteException, ContaBloqueadaException, ValorInvalidoException {
-        contaOrigem.transferir(contaDestino, valor);
-        contaOrigem.adicionarOperacao(this);
-        contaDestino.adicionarOperacao(this);
-    }
+    public void executar() throws ValorInvalidoException, SaldoInsuficienteException, ContaBloqueadaException {
+        if (origem == null || destino == null) {
+            throw new ValorInvalidoException("Conta de origem ou destino inválida.");
+        }
 
-    public Conta getContaOrigem() { return contaOrigem; }
-    public Conta getContaDestino() { return contaDestino; }
+        // Regra de Negócio: Não permite transferência para a própria conta
+        if (origem.getNumero().trim().equalsIgnoreCase(destino.getNumero().trim())) {
+            throw new ValorInvalidoException("A conta de destino não pode ser igual à conta de origem.");
+        }
+
+        origem.transferir(destino, valor);
+    }
 }

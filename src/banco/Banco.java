@@ -3,108 +3,97 @@ package banco;
 import cliente.Cliente;
 import conta.Conta;
 import gerente.Gerente;
-import emprestimo.Emprestimo;
-import pix.ChavePix;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Classe principal de gerenciamento das entidades e operações do Banco.
- */
 public class Banco {
     private String nome;
     private List<Cliente> clientes;
     private List<Conta> contas;
     private List<Gerente> gerentes;
-    private List<Emprestimo> emprestimos;
-    private List<ChavePix> chavesPix;
 
     public Banco(String nome) {
         this.nome = nome;
         this.clientes = new ArrayList<>();
         this.contas = new ArrayList<>();
         this.gerentes = new ArrayList<>();
-        this.emprestimos = new ArrayList<>();
-        this.chavesPix = new ArrayList<>();
     }
 
-    // --- MÉTODOS DE CADASTRO E ADIÇÃO ---
+    public String getNome() {
+        return nome;
+    }
 
     public void adicionarCliente(Cliente cliente) {
-        if (cliente != null) {
-            this.clientes.add(cliente);
+        if (cliente == null) return;
+
+        // Regra de Negócio: Impede cadastrar CPFs duplicados
+        if (buscarClientePorCpf(cliente.getCpf()) != null) {
+            System.out.println("[!] ERRO: Já existe um cliente cadastrado com o CPF: " + cliente.getCpf());
+            return;
+        }
+        
+        if (!clientes.contains(cliente)) {
+            clientes.add(cliente);
         }
     }
 
     public void adicionarConta(Conta conta) {
-        if (conta != null) {
-            this.contas.add(conta);
+        if (conta == null) return;
+
+        // Regra de Negócio: Impede criar números de conta duplicados
+        if (buscarContaPorNumero(conta.getNumero()) != null) {
+            System.out.println("[!] ERRO: Já existe uma conta cadastrada com o número: " + conta.getNumero());
+            return;
+        }
+
+        if (!contas.contains(conta)) {
+            contas.add(conta);
         }
     }
 
     public void adicionarGerente(Gerente gerente) {
-        if (gerente != null) {
-            this.gerentes.add(gerente);
+        if (gerente != null && !gerentes.contains(gerente)) {
+            gerentes.add(gerente);
         }
     }
-
-    public void adicionarEmprestimo(Emprestimo emprestimo) {
-        if (emprestimo != null) {
-            this.emprestimos.add(emprestimo);
-        }
-    }
-
-    public void cadastrarChavePix(ChavePix chavePix) {
-        if (chavePix != null) {
-            this.chavesPix.add(chavePix);
-        }
-    }
-
-    // --- MÉTODOS DE BUSCA E PESQUISA ---
 
     public Cliente buscarClientePorCpf(String cpf) {
-        for (Cliente c : clientes) {
-            if (c.getCpf().equals(cpf)) {
-                return c;
+        if (cpf == null) return null;
+        String cpfLimpo = cpf.trim().replaceAll("[^0-9]", "");
+
+        for (Cliente cliente : clientes) {
+            if (cliente.getCpf() != null) {
+                String clienteCpfLimpo = cliente.getCpf().trim().replaceAll("[^0-9]", "");
+                if (clienteCpfLimpo.equals(cpfLimpo) || cliente.getCpf().trim().equalsIgnoreCase(cpf.trim())) {
+                    return cliente;
+                }
             }
         }
         return null;
     }
 
     public Conta buscarContaPorNumero(String numero) {
-        for (Conta c : contas) {
-            if (c.getNumero().equals(numero)) {
-                return c;
+        if (numero == null) return null;
+        String numBuscado = numero.trim();
+
+        for (Conta conta : contas) {
+            if (conta.getNumero() != null && conta.getNumero().trim().equalsIgnoreCase(numBuscado)) {
+                return conta;
             }
         }
         return null;
     }
 
-    public ChavePix buscarChavePix(String chave) {
-        for (ChavePix pix : chavesPix) {
-            if (pix.getChave().equals(chave)) {
-                return pix;
-            }
-        }
-        return null;
+    public List<Cliente> getClientes() {
+        return clientes;
     }
 
-    public Gerente buscarGerentePorMatricula(String matricula) {
-        for (Gerente g : gerentes) {
-            if (g.getMatricula().equals(matricula)) {
-                return g;
-            }
-        }
-        return null;
+    public List<Conta> getContas() {
+        return contas;
     }
 
-    // --- GETTERS ---
-
-    public String getNome() { return nome; }
-    public List<Cliente> getClientes() { return clientes; }
-    public List<Conta> getContas() { return contas; }
-    public List<Gerente> getGerentes() { return gerentes; }
-    public List<Emprestimo> getEmprestimos() { return emprestimos; }
-    public List<ChavePix> getChavesPix() { return chavesPix; }
+    public List<Gerente> getGerentes() {
+        return gerentes;
+    }
 }

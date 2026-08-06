@@ -25,7 +25,6 @@ public class ContaUniversitaria extends Conta {
         totalMovimentadoMes += valor;
     }
 
-    @Override
     public void aplicarTarifaMensal() {
         this.totalMovimentadoMes = 0.0; // Reseta o acumulador mensal
     }

@@ -25,7 +25,7 @@ public class ContaSalario extends Conta {
         saquesRealizados++;
     }
 
-    @Override
+    
     public void aplicarTarifaMensal() {
         this.saquesRealizados = 0; // Reseta a contagem de saques ao mês
     }

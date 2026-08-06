@@ -2,23 +2,18 @@ package conta;
 
 import cliente.Cliente;
 
-/**
- * Subclasse de Conta para pessoas jurídicas/empresas.
- */
 public class ContaEmpresarial extends Conta {
-    private double limiteCredito;
     private double tarifaOperacional;
 
-    public ContaEmpresarial(String agencia, Cliente cliente) {
-        super(agencia, cliente);
-        this.limiteCredito = 2000.0;
-        this.tarifaOperacional = 30.0;
+    public ContaEmpresarial(String numero, Cliente cliente) {
+        super(numero, cliente);
+        this.tarifaOperacional = 10.0;
     }
 
-    @Override
-    public void aplicarTarifaMensal() {
+    public double getTarifaOperacional() { return tarifaOperacional; }
+
+    // Remova a linha @Override se ela estiver acima desse método
+    public void cobrarTarifaOperacional() {
         this.saldo -= tarifaOperacional;
     }
-
-    public double getLimiteCredito() { return limiteCredito; }
 }

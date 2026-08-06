@@ -2,92 +2,94 @@ package conta;
 
 import cliente.Cliente;
 import operacao.Operacao;
-import util.GeradorNumeroConta;
-import excecao.*;
-import interfaces.Transferivel;
+import excecao.ContaBloqueadaException;
+import excecao.SaldoInsuficienteException;
+import excecao.ValorInvalidoException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-/**
- * Classe abstrata base para representação de contas bancárias.
- * Aplica abstração, encapsulamento e implementa a interface Transferivel.
- * 
- * Fonte: Bank Program - Inheritance and Abstraction
- * (https://github.com/Jon-Peppinck/javaBankInheritAbstract)
- */
-public abstract class Conta implements Transferivel {
-    protected String numero;
-    protected String agencia;
+public abstract class Conta {
+    private String numero;
     protected double saldo;
-    protected boolean statusAtivo;
-    protected Cliente cliente;
-    protected List<Operacao> historico;
+    private Cliente cliente;
+    protected boolean ativa;
+    private List<Operacao> historicoOperacoes;
 
-    public Conta(String agencia, Cliente cliente) {
-        this.numero = GeradorNumeroConta.gerar();
-        this.agencia = agencia;
+    public Conta(String numero, Cliente cliente) {
+        this.numero = numero;
         this.cliente = cliente;
         this.saldo = 0.0;
-        this.statusAtivo = true;
-        this.historico = new ArrayList<>();
+        this.ativa = true;
+        this.historicoOperacoes = new ArrayList<>();
+    }
+
+    public String getNumero() { return numero; }
+    public void setNumero(String numero) { this.numero = numero; }
+
+    public double getSaldo() { return saldo; }
+
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
+    public boolean isAtiva() { return ativa; }
+    public void setAtiva(boolean ativa) { this.ativa = ativa; }
+
+    public boolean isStatusAtivo() { return ativa; }
+
+    public void adicionarOperacao(Operacao operacao) {
+        if (operacao != null) {
+            this.historicoOperacoes.add(operacao);
+        }
+    }
+
+    public List<Operacao> getHistoricoOperacoes() {
+        return historicoOperacoes;
     }
 
     public void depositar(double valor) throws ValorInvalidoException, ContaBloqueadaException {
-        if (!statusAtivo) {
-            throw new ContaBloqueadaException("Conta bloqueada para depósitos.");
-        }
-        if (valor <= 0) {
-            throw new ValorInvalidoException("O valor do depósito deve ser maior que zero.");
-        }
+        if (!ativa) throw new ContaBloqueadaException("Conta está bloqueada.");
+        if (valor <= 0) throw new ValorInvalidoException("O valor do depósito deve ser maior que zero.");
         this.saldo += valor;
     }
 
-    public void sacar(double valor) throws SaldoInsuficienteException, ContaBloqueadaException, ValorInvalidoException {
-        if (!statusAtivo) {
-            throw new ContaBloqueadaException("Conta bloqueada para saques.");
-        }
-        if (valor <= 0) {
-            throw new ValorInvalidoException("O valor do saque deve ser maior que zero.");
-        }
-        if (valor > saldo) {
-            throw new SaldoInsuficienteException("Saldo insuficiente para realizar o saque.", saldo);
-        }
+    public void sacar(double valor) throws ValorInvalidoException, SaldoInsuficienteException, ContaBloqueadaException {
+        if (!ativa) throw new ContaBloqueadaException("Conta está bloqueada.");
+        if (valor <= 0) throw new ValorInvalidoException("O valor do saque deve ser maior que zero.");
+        if (valor > saldo) throw new SaldoInsuficienteException("Saldo insuficiente.", saldo);
         this.saldo -= valor;
     }
 
-    @Override
-    public void transferir(Conta destino, double valor) 
-            throws SaldoInsuficienteException, ContaBloqueadaException, ValorInvalidoException {
+    public void transferir(Conta destino, double valor) throws ValorInvalidoException, SaldoInsuficienteException, ContaBloqueadaException {
         if (destino == null) {
-            throw new ValorInvalidoException("Conta destino é inválida.");
+            throw new ValorInvalidoException("Conta de destino inválida.");
         }
         this.sacar(valor);
         destino.depositar(valor);
     }
 
-    // Método abstrato a ser implementado de acordo com a regra de cada tipo de conta
-    public abstract void aplicarTarifaMensal();
+    // --- Métodos abstratos/base para permitir @Override nas subclasses ---
+    public void cobrarTarifaMensal() throws SaldoInsuficienteException, ValorInvalidoException, ContaBloqueadaException {}
+    public void cobrarTarifaOperacional() throws SaldoInsuficienteException, ValorInvalidoException, ContaBloqueadaException {}
+    public void debitarTarifaMensal() throws SaldoInsuficienteException, ValorInvalidoException, ContaBloqueadaException {}
+    public void debitarTarifa() throws SaldoInsuficienteException, ValorInvalidoException, ContaBloqueadaException {}
+    public void aplicarRendimento() {}
+    public void renderJuros() {}
+    public void processar() {}
+    public void debitarTarifaManutencao() throws SaldoInsuficienteException, ValorInvalidoException, ContaBloqueadaException {}
 
-    public void bloquear() {
-        this.statusAtivo = false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Conta conta = (Conta) o;
+        return Objects.equals(numero != null ? numero.trim() : null, 
+                              conta.numero != null ? conta.numero.trim() : null);
     }
 
-    public void desbloquear() {
-        this.statusAtivo = true;
+    @Override
+    public int hashCode() {
+        return Objects.hash(numero != null ? numero.trim() : null);
     }
-
-    public void adicionarOperacao(Operacao operacao) {
-        if (operacao != null) {
-            this.historico.add(operacao);
-        }
-    }
-
-    // Getters e Setters
-    public String getNumero() { return numero; }
-    public String getAgencia() { return agencia; }
-    public double getSaldo() { return saldo; }
-    public boolean isStatusAtivo() { return statusAtivo; }
-    public Cliente getCliente() { return cliente; }
-    public List<Operacao> getHistorico() { return historico; }
 }

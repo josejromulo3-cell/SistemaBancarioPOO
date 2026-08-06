@@ -1,28 +1,39 @@
 package conta;
 
 import cliente.Cliente;
-import excecao.*;
+import excecao.ContaBloqueadaException;
+import excecao.SaldoInsuficienteException;
+import excecao.ValorInvalidoException;
 
-/**
- * Subclasse de Conta com suporte a Cheque Especial e tarifa mensal.
- */
 public class ContaCorrente extends Conta {
     private double limiteChequeEspecial;
     private double tarifaMensal;
 
-    public ContaCorrente(String agencia, Cliente cliente) {
-        super(agencia, cliente);
-        this.limiteChequeEspecial = 500.0;
-        this.tarifaMensal = 15.0;
+    // Construtor completo
+    public ContaCorrente(String numero, Cliente cliente, double limiteChequeEspecial, double tarifaMensal) {
+        super(numero, cliente);
+        this.limiteChequeEspecial = limiteChequeEspecial;
+        this.tarifaMensal = tarifaMensal;
     }
 
+    // Construtor simplificado (usado pelo menu)
+    public ContaCorrente(String numero, Cliente cliente) {
+        this(numero, cliente, 500.0, 15.0);
+    }
+
+    public double getLimiteChequeEspecial() { return limiteChequeEspecial; }
+    public void setLimiteChequeEspecial(double limite) { this.limiteChequeEspecial = limite; }
+
+    public double getTarifaMensal() { return tarifaMensal; }
+    public void setTarifaMensal(double tarifaMensal) { this.tarifaMensal = tarifaMensal; }
+
     @Override
-    public void sacar(double valor) throws SaldoInsuficienteException, ContaBloqueadaException, ValorInvalidoException {
-        if (!statusAtivo) {
-            throw new ContaBloqueadaException("Conta bloqueada.");
+    public void sacar(double valor) throws ValorInvalidoException, SaldoInsuficienteException, ContaBloqueadaException {
+        if (!isAtiva()) {
+            throw new ContaBloqueadaException("Conta está bloqueada.");
         }
         if (valor <= 0) {
-            throw new ValorInvalidoException("Valor de saque inválido.");
+            throw new ValorInvalidoException("O valor do saque deve ser maior que zero.");
         }
         if (saldo + limiteChequeEspecial < valor) {
             throw new SaldoInsuficienteException("Saldo e limite de cheque especial insuficientes.", saldo);
@@ -31,10 +42,12 @@ public class ContaCorrente extends Conta {
     }
 
     @Override
-    public void aplicarTarifaMensal() {
-        this.saldo -= tarifaMensal;
+    public void debitarTarifaMensal() throws SaldoInsuficienteException, ValorInvalidoException, ContaBloqueadaException {
+        this.sacar(tarifaMensal);
     }
 
-    public double getLimiteChequeEspecial() { return limiteChequeEspecial; }
-    public void setLimiteChequeEspecial(double limite) { this.limiteChequeEspecial = limite; }
+    @Override
+    public void cobrarTarifaMensal() throws SaldoInsuficienteException, ValorInvalidoException, ContaBloqueadaException {
+        this.sacar(tarifaMensal);
+    }
 }
