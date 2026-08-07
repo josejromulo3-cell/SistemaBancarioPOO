@@ -1,32 +1,18 @@
 package conta;
 
 import cliente.Cliente;
-import excecao.*;
 
-/**
- * Subclasse de Conta direcionada para salário, com limite mensal de saques.
- */
 public class ContaSalario extends Conta {
-    private int saquesPermitidos;
-    private int saquesRealizados;
+    private int saquesGratuitosRestantes;
 
-    public ContaSalario(String agencia, Cliente cliente) {
-        super(agencia, cliente);
-        this.saquesPermitidos = 2;
-        this.saquesRealizados = 0;
+    public ContaSalario(String numero, Cliente cliente, int saquesGratuitos) {
+        super(numero, cliente);
+        this.saquesGratuitosRestantes = saquesGratuitos;
     }
 
-    @Override
-    public void sacar(double valor) throws SaldoInsuficienteException, ContaBloqueadaException, ValorInvalidoException {
-        if (saquesRealizados >= saquesPermitidos) {
-            throw new ValorInvalidoException("Limite mensal de saques gratuitos atingido.");
-        }
-        super.sacar(valor);
-        saquesRealizados++;
+    public ContaSalario(String numero, Cliente cliente) {
+        this(numero, cliente, 3);
     }
 
-    
-    public void aplicarTarifaMensal() {
-        this.saquesRealizados = 0; // Reseta a contagem de saques ao mês
-    }
+    public int getSaquesGratuitosRestantes() { return saquesGratuitosRestantes; }
 }

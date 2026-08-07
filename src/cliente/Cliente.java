@@ -1,63 +1,42 @@
 package cliente;
 
+import pessoa.Pessoa;
 import conta.Conta;
+import cartao.Cartao;
+import pix.ChavePix;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cliente {
-    private String nome;
-    private String cpf;
-    private String email;
-    private String telefone;
+public class Cliente extends Pessoa {
     private String senha;
     private List<Conta> contas;
+    private List<Cartao> cartoes;
+    private List<ChavePix> chavesPix;
 
     public Cliente(String nome, String cpf, String email, String telefone, String senha) {
-        this.nome = nome;
-        this.cpf = cpf;
-        this.email = email;
-        this.telefone = telefone;
+        super(nome, cpf, email, telefone);
         this.senha = senha;
         this.contas = new ArrayList<>();
+        this.cartoes = new ArrayList<>();
+        this.chavesPix = new ArrayList<>();
     }
-
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-
-    public String getCpf() { return cpf; }
-    public void setCpf(String cpf) { this.cpf = cpf; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getTelefone() { return telefone; }
-    public void setTelefone(String telefone) { this.telefone = telefone; }
 
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
 
     public List<Conta> getContas() { return contas; }
-
     public void adicionarConta(Conta conta) {
-        if (conta != null) {
-            Conta existente = buscarContaPorNumero(conta.getNumero());
-            if (existente == null) {
-                contas.add(conta);
-            }
-        }
+        if (conta != null && !contas.contains(conta)) contas.add(conta);
     }
 
-    public Conta buscarContaPorNumero(String numero) {
-        if (numero == null) return null;
-        String numBuscado = numero.trim();
+    public List<Cartao> getCartoes() { return cartoes; }
+    public void adicionarCartao(Cartao cartao) {
+        if (cartao != null && !cartoes.contains(cartao)) cartoes.add(cartao);
+    }
 
-        for (Conta conta : contas) {
-            if (conta != null && conta.getNumero() != null) {
-                if (conta.getNumero().trim().equalsIgnoreCase(numBuscado)) {
-                    return conta;
-                }
-            }
-        }
-        return null;
+    public List<ChavePix> getChavesPix() { return chavesPix; }
+    public void adicionarChavePix(ChavePix chave) {
+        if (chave != null && !chavesPix.contains(chave)) chavesPix.add(chave);
     }
 }

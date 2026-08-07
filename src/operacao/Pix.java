@@ -1,32 +1,39 @@
 package operacao;
 
 import conta.Conta;
-import pix.ChavePix;
 import excecao.ContaBloqueadaException;
 import excecao.SaldoInsuficienteException;
 import excecao.ValorInvalidoException;
+import pix.ChavePix;
 
-/**
- * Implementação da operação Pix utilizando Chave Pix.
- */
 public class Pix extends Operacao {
     private Conta contaOrigem;
-    private ChavePix chavePixDestino;
+    private Conta contaDestino;
+    private String chaveDestino;
 
-    public Pix(Conta contaOrigem, ChavePix chavePixDestino, double valor) {
-        super(valor, "Transferência via PIX (" + chavePixDestino.getChave() + ")");
+    public Pix(Conta contaOrigem, Conta contaDestino, double valor, String chaveDestino) {
+        super(valor, "PIX");
         this.contaOrigem = contaOrigem;
-        this.chavePixDestino = chavePixDestino;
+        this.contaDestino = contaDestino;
+        this.chaveDestino = chaveDestino;
+    }
+
+    public Pix(Conta contaOrigem, ChavePix chave, double valor) {
+        super(valor, "PIX");
+        this.contaOrigem = contaOrigem;
+        this.contaDestino = chave.getConta();
+        this.chaveDestino = chave.getValor();
     }
 
     @Override
-    public void executar() throws SaldoInsuficienteException, ContaBloqueadaException, ValorInvalidoException {
-        Conta contaDestino = chavePixDestino.getConta();
-        contaOrigem.transferir(contaDestino, valor);
-        contaOrigem.adicionarOperacao(this);
-        contaDestino.adicionarOperacao(this);
+    public void executar() throws SaldoInsuficienteException, ValorInvalidoException, ContaBloqueadaException {
+        if (valor <= 0) {
+            throw new ValorInvalidoException("O valor do PIX deve ser maior que zero.");
+        }
+        if (contaOrigem.getSaldo() < valor) {
+            throw new SaldoInsuficienteException("Saldo insuficiente para realizar o PIX.", contaOrigem.getSaldo());
+        }
+        contaOrigem.sacar(valor);
+        contaDestino.depositar(valor);
     }
-
-    public Conta getContaOrigem() { return contaOrigem; }
-    public ChavePix getChavePixDestino() { return chavePixDestino; }
 }

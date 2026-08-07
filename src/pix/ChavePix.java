@@ -2,29 +2,18 @@ package pix;
 
 import conta.Conta;
 
-/**
- * Representa uma chave Pix cadastrada e vinculada a uma conta bancária.
- */
 public class ChavePix {
-    private String chave;
+    private String valor;
     private TipoChavePix tipo;
     private Conta conta;
 
-    public ChavePix(String chave, TipoChavePix tipo, Conta conta) {
-        this.chave = chave;
+    public ChavePix(String valor, TipoChavePix tipo, Conta conta) {
+        this.valor = valor;
         this.tipo = tipo;
         this.conta = conta;
     }
 
-    public String getChave() {
-        return chave;
-    }
-
-    public TipoChavePix getTipo() {
-        return tipo;
-    }
-
-    public Conta getConta() {
-        return conta;
-    }
+    public String getValor() { return valor; }
+    public TipoChavePix getTipo() { return tipo; }
+    public Conta getConta() { return conta; }
 }
