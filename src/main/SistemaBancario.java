@@ -4,348 +4,417 @@ import banco.Banco;
 import cliente.Cliente;
 import conta.*;
 import gerente.Gerente;
-import operacao.*;
 import pix.ChavePix;
 import pix.TipoChavePix;
+import operacao.*;
 import cartao.*;
 import emprestimo.Emprestimo;
+import excecao.*;
 
 import java.util.Scanner;
 
 public class SistemaBancario {
     private Banco banco;
     private Scanner scanner;
+    private Gerente gerentePadrao;
 
     public SistemaBancario() {
-        this.banco = new Banco("Banco POO");
+        this.banco = new Banco("Banco Central POO");
         this.scanner = new Scanner(System.in);
-        carregarDadosIniciais();
-    }
-
-    private void carregarDadosIniciais() {
-        Gerente gerente = new Gerente("Carlos Gerente", "000.000.000-00", "carlos@banco.com", "(83) 99999-0000", "GER-101");
-        banco.adicionarGerente(gerente);
-
-        Cliente cliente1 = new Cliente("José Rômulo", "111.111.111-11", "romulo@email.com", "(83) 98888-1111", "1234");
-        Conta conta1 = new ContaCorrente("1001-1", cliente1);
-        try { conta1.depositar(1500.0); } catch (Exception ignored) {}
-
-        cliente1.adicionarConta(conta1);
-        banco.adicionarCliente(cliente1);
-        banco.adicionarConta(conta1);
-
-        // Adiciona chave Pix padrão
-        ChavePix chave1 = new ChavePix("romulo@email.com", TipoChavePix.EMAIL, conta1);
-        cliente1.adicionarChavePix(chave1);
+        // Gerente padrão do sistema para operações administrativas
+        this.gerentePadrao = new Gerente("Carlos Andrade", "111.222.333-44", "gerente@bancopoo.com", "83 98888-7777", "GER-001");
     }
 
     public void iniciar() {
         int opcao = -1;
-        do {
+        while (opcao != 0) {
             exibirMenu();
             try {
-                opcao = Integer.parseInt(scanner.nextLine().trim());
-                processarOpcao(opcao);
+                opcao = Integer.parseInt(scanner.nextLine());
+                switch (opcao) {
+                    case 1 -> cadastrarCliente();
+                    case 2 -> criarConta();
+                    case 3 -> realizarDeposito();
+                    case 4 -> realizarSaque();
+                    case 5 -> realizarTransferencia();
+                    case 6 -> cadastrarChavePix();
+                    case 7 -> realizarPix();
+                    case 8 -> solicitarCartao();
+                    case 9 -> solicitarEmprestimo();
+                    case 10 -> consultarExtrato();
+                    case 11 -> areaGerente();
+                    case 0 -> System.out.println("\n Obrigado por utilizar o Sistema Bancário POO. Até logo!");
+                    default -> System.out.println("\n Opção inválida! Tente novamente.");
+                }
             } catch (NumberFormatException e) {
-                System.out.println("\n[!] Opção inválida. Digite um número inteiro.");
+                System.out.println("\n Erro: Digite apenas números válidos.");
+            } catch (Exception e) {
+                System.out.println("\n Ocorreu um erro inesperado: " + e.getMessage());
             }
-        } while (opcao != 0);
+            if (opcao != 0) {
+                System.out.println("\nPressione ENTER para continuar...");
+                scanner.nextLine();
+            }
+        }
     }
 
     private void exibirMenu() {
-        System.out.println("\n=================================");
-        System.out.println("      SISTEMA BANCÁRIO POO       ");
-        System.out.println("=================================");
+        System.out.println("\n==================================================");
+        System.out.println("            🏦 SISTEMA BANCÁRIO POO 🏦           ");
+        System.out.println("==================================================");
         System.out.println("1. Cadastrar Cliente");
-        System.out.println("2. Criar Conta (Corrente, Poupança, Salário, Empresa, Univ.)");
+        System.out.println("2. Criar Conta");
         System.out.println("3. Realizar Depósito");
         System.out.println("4. Realizar Saque");
         System.out.println("5. Realizar Transferência Tradicional");
-        System.out.println("6. Cadastrar Chave Pix");
-        System.out.println("7. Realizar Pix");
-        System.out.println("8. Solicitar Cartão de Crédito/Débito");
+        System.out.println("6. Cadastrar Chave PIX");
+        System.out.println("7. Realizar PIX");
+        System.out.println("8. Solicitar Cartão (Crédito/Débito)");
         System.out.println("9. Simular / Solicitar Empréstimo");
-        System.out.println("10. Consultar Saldo / Extrato Completo");
+        System.out.println("10. Consultar Saldo e Extrato");
+        System.out.println("11. Área do Gerente (Painel Administrativo) 👔");
         System.out.println("0. Sair");
+        System.out.println("--------------------------------------------------");
         System.out.print("Escolha uma opção: ");
     }
 
-    private void processarOpcao(int opcao) {
-        switch (opcao) {
-            case 1 -> cadastrarCliente();
-            case 2 -> criarConta();
-            case 3 -> realizarDeposito();
-            case 4 -> realizarSaque();
-            case 5 -> realizarTransferencia();
-            case 6 -> cadastrarChavePix();
-            case 7 -> realizarPix();
-            case 8 -> solicitarCartao();
-            case 9 -> solicitarEmprestimo();
-            case 10 -> consultarSaldo();
-            case 0 -> System.out.println("\nEncerrando o Sistema Bancário... Até logo!");
-            default -> System.out.println("\n[!] Opção inexistente.");
-        }
-    }
-
     private void cadastrarCliente() {
-        System.out.println("\n--- Cadastro de Cliente ---");
-        System.out.print("Nome: ");
-        String nome = scanner.nextLine().trim();
+        System.out.println("\n--- 👤 CADASTRO DE CLIENTE ---");
+        System.out.print("Nome completo: ");
+        String nome = scanner.nextLine();
         System.out.print("CPF: ");
-        String cpf = scanner.nextLine().trim();
+        String cpf = scanner.nextLine();
+        System.out.print("E-mail: ");
+        String email = scanner.nextLine();
+        System.out.print("Telefone: ");
+        String telefone = scanner.nextLine();
+        System.out.print("Crie uma Senha: ");
+        String senha = scanner.nextLine();
 
         if (banco.buscarClientePorCpf(cpf) != null) {
-            System.out.println("[!] ERRO: Já existe um cliente cadastrado com este CPF!");
+            System.out.println("\n Erro: Já existe um cliente cadastrado com este CPF.");
             return;
         }
-
-        System.out.print("Email: ");
-        String email = scanner.nextLine().trim();
-        System.out.print("Telefone: ");
-        String telefone = scanner.nextLine().trim();
-        System.out.print("Senha: ");
-        String senha = scanner.nextLine().trim();
 
         Cliente cliente = new Cliente(nome, cpf, email, telefone, senha);
         banco.adicionarCliente(cliente);
-        System.out.println("[✓] Cliente " + nome + " cadastrado com sucesso!");
+        System.out.println("\n Cliente " + nome + " cadastrado com sucesso!");
     }
 
     private void criarConta() {
-        System.out.println("\n--- Criar Conta ---");
-        System.out.print("CPF do Cliente: ");
-        String cpf = scanner.nextLine().trim();
+        System.out.println("\n--- 💳 CRIAÇÃO DE CONTA ---");
+        System.out.print("Digite o CPF do titular: ");
+        String cpf = scanner.nextLine();
+
         Cliente cliente = banco.buscarClientePorCpf(cpf);
-
         if (cliente == null) {
-            System.out.println("[!] Cliente não encontrado com o CPF fornecido.");
+            System.out.println("\n Erro: Cliente não encontrado. Cadastre o cliente primeiro.");
             return;
         }
 
-        System.out.print("Número da Conta: ");
-        String numero = scanner.nextLine().trim();
+        System.out.println("Selecione o tipo de conta:");
+        System.out.println("1. Conta Corrente");
+        System.out.println("2. Conta Poupança");
+        System.out.println("3. Conta Salário");
+        System.out.println("4. Conta Empresarial");
+        System.out.println("5. Conta Universitária");
+        System.out.print("Opção: ");
+        int tipo = Integer.parseInt(scanner.nextLine());
 
-        if (banco.buscarContaPorNumero(numero) != null) {
-            System.out.println("[!] ERRO: Já existe uma conta cadastrada com este número!");
+        System.out.print("Digite o número para a nova conta: ");
+        String numero = scanner.nextLine();
+
+        if (banco.buscarConta(numero) != null) {
+            System.out.println("\n Erro: Já existe uma conta com esse número.");
             return;
         }
 
-        System.out.println("Escolha o tipo de conta:");
-        System.out.println("1 - Conta Corrente");
-        System.out.println("2 - Conta Poupança");
-        System.out.println("3 - Conta Salário");
-        System.out.println("4 - Conta Empresarial");
-        System.out.println("5 - Conta Universitária");
-        String tipo = scanner.nextLine().trim();
+        Conta novaConta = null;
+        switch (tipo) {
+            case 1 -> novaConta = new ContaCorrente(numero, cliente);
+            case 2 -> novaConta = new ContaPoupanca(numero, cliente);
+            case 3 -> novaConta = new ContaSalario(numero, cliente);
+            case 4 -> novaConta = new ContaEmpresarial(numero, cliente);
+            case 5 -> novaConta = new ContaUniversitaria(numero, cliente);
+            default -> System.out.println("\n Tipo de conta inválido.");
+        }
 
-        Conta conta = switch (tipo) {
-            case "2" -> new ContaPoupanca(numero, cliente);
-            case "3" -> new ContaSalario(numero, cliente);
-            case "4" -> new ContaEmpresarial(numero, cliente);
-            case "5" -> new ContaUniversitaria(numero, cliente);
-            default -> new ContaCorrente(numero, cliente);
-        };
-
-        banco.adicionarConta(conta);
-        cliente.adicionarConta(conta);
-        System.out.println("[✓] Conta " + numero + " criada com sucesso para " + cliente.getNome() + "!");
+        if (novaConta != null) {
+            banco.adicionarConta(novaConta);
+            cliente.adicionarConta(novaConta);
+            System.out.println("\n Conta número " + numero + " criada com sucesso para " + cliente.getNome() + "!");
+        }
     }
 
     private void realizarDeposito() {
-        System.out.print("\nNúmero da Conta: ");
-        String numero = scanner.nextLine().trim();
-        Conta conta = banco.buscarContaPorNumero(numero);
+        System.out.println("\n--- 💵 DEPÓSITO ---");
+        System.out.print("Número da conta: ");
+        String numero = scanner.nextLine();
+        Conta conta = banco.buscarConta(numero);
 
-        if (conta != null) {
-            System.out.print("Valor do Depósito: R$ ");
-            try {
-                double valor = Double.parseDouble(scanner.nextLine().trim());
-                new Deposito(conta, valor).executar();
-                System.out.println("[✓] Depósito realizado! Novo saldo: R$ " + String.format("%.2f", conta.getSaldo()));
-            } catch (Exception e) {
-                System.out.println("[!] Erro: " + e.getMessage());
-            }
-        } else {
-            System.out.println("[!] Conta não encontrada.");
+        if (conta == null) {
+            System.out.println("\n Conta não encontrada.");
+            return;
+        }
+
+        System.out.print("Valor a depositar: R$ ");
+        double valor = Double.parseDouble(scanner.nextLine());
+
+        try {
+            Deposito op = new Deposito(conta, valor);
+            op.executar();
+            System.out.println("\n Depósito efetuado com sucesso! Saldo atual: R$ " + conta.getSaldo());
+        } catch (Exception e) {
+            System.out.println("\n Erro ao depositar: " + e.getMessage());
         }
     }
 
     private void realizarSaque() {
-        System.out.print("\nNúmero da Conta: ");
-        String numero = scanner.nextLine().trim();
-        Conta conta = banco.buscarContaPorNumero(numero);
+        System.out.println("\n--- 🏧 SAQUE ---");
+        System.out.print("Número da conta: ");
+        String numero = scanner.nextLine();
+        Conta conta = banco.buscarConta(numero);
 
-        if (conta != null) {
-            System.out.print("Valor do Saque: R$ ");
-            try {
-                double valor = Double.parseDouble(scanner.nextLine().trim());
-                new Saque(conta, valor).executar();
-                System.out.println("[✓] Saque realizado! Novo saldo: R$ " + String.format("%.2f", conta.getSaldo()));
-            } catch (Exception e) {
-                System.out.println("[!] Erro: " + e.getMessage());
-            }
-        } else {
-            System.out.println("[!] Conta não encontrada.");
+        if (conta == null) {
+            System.out.println("\n Conta não encontrada.");
+            return;
+        }
+
+        System.out.print("Valor a sacar: R$ ");
+        double valor = Double.parseDouble(scanner.nextLine());
+
+        try {
+            Saque op = new Saque(conta, valor);
+            op.executar();
+            System.out.println("\n Saque efetuado com sucesso! Saldo atual: R$ " + conta.getSaldo());
+        } catch (Exception e) {
+            System.out.println("\n Erro ao sacar: " + e.getMessage());
         }
     }
 
     private void realizarTransferencia() {
-        System.out.print("\nConta Origem: ");
-        Conta origem = banco.buscarContaPorNumero(scanner.nextLine().trim());
-        System.out.print("Conta Destino: ");
-        Conta destino = banco.buscarContaPorNumero(scanner.nextLine().trim());
+        System.out.println("\n--- 🔄 TRANSFERÊNCIA TRADICIONAL ---");
+        System.out.print("Número da conta de ORIGEM: ");
+        Conta origem = banco.buscarConta(scanner.nextLine());
 
-        if (origem != null && destino != null) {
-            System.out.print("Valor da Transferência: R$ ");
-            try {
-                double valor = Double.parseDouble(scanner.nextLine().trim());
-                new Transferencia(origem, destino, valor).executar();
-                System.out.println("[✓] Transferência realizada com sucesso!");
-            } catch (Exception e) {
-                System.out.println("[!] Erro: " + e.getMessage());
-            }
-        } else {
-            System.out.println("[!] Conta de origem ou destino não encontrada.");
+        System.out.print("Número da conta de DESTINO: ");
+        Conta destino = banco.buscarConta(scanner.nextLine());
+
+        if (origem == null || destino == null) {
+            System.out.println("\n Uma ou ambas as contas não foram encontradas.");
+            return;
+        }
+
+        System.out.print("Valor da transferência: R$ ");
+        double valor = Double.parseDouble(scanner.nextLine());
+
+        try {
+            Transferencia op = new Transferencia(origem, destino, valor);
+            op.executar();
+            System.out.println("\n Transferência realizada com sucesso!");
+            System.out.println("Saldo origem: R$ " + origem.getSaldo());
+        } catch (Exception e) {
+            System.out.println("\n Erro na transferência: " + e.getMessage());
         }
     }
 
     private void cadastrarChavePix() {
-        System.out.println("\n--- Cadastrar Chave Pix ---");
-        System.out.print("Número da Conta vinculada: ");
-        Conta conta = banco.buscarContaPorNumero(scanner.nextLine().trim());
+        System.out.println("\n--- 🔑 CADASTRO DE CHAVE PIX ---");
+        System.out.print("Número da conta a vincular: ");
+        Conta conta = banco.buscarConta(scanner.nextLine());
 
         if (conta == null) {
-            System.out.println("[!] Conta não encontrada.");
+            System.out.println("\n Conta não encontrada.");
             return;
         }
 
-        System.out.println("Tipo de Chave: 1 - CPF | 2 - Email | 3 - Telefone");
-        String t = scanner.nextLine().trim();
-        TipoChavePix tipoEnum = switch (t) {
-            case "2" -> TipoChavePix.EMAIL;
-            case "3" -> TipoChavePix.TELEFONE;
-            default -> TipoChavePix.CPF;
+        System.out.println("Selecione o Tipo de Chave:");
+        System.out.println("1. CPF");
+        System.out.println("2. E-mail");
+        System.out.println("3. Telefone");
+        System.out.println("4. Aleatória");
+        System.out.print("Opção: ");
+        int opTipo = Integer.parseInt(scanner.nextLine());
+
+        TipoChavePix tipo = switch (opTipo) {
+            case 1 -> TipoChavePix.CPF;
+            case 2 -> TipoChavePix.EMAIL;
+            case 3 -> TipoChavePix.TELEFONE;
+            default -> TipoChavePix.ALEATORIA;
         };
 
-        System.out.print("Informe o Valor da Chave Pix: ");
-        String valorChave = scanner.nextLine().trim();
+        System.out.print("Digite o valor da chave (ex: email, telefone ou cpf): ");
+        String valorChave = scanner.nextLine();
 
-        if (banco.buscarContaPorChavePix(valorChave) != null) {
-            System.out.println("[!] ERRO: Esta chave Pix já está cadastrada no sistema!");
-            return;
-        }
-
-        ChavePix chave = new ChavePix(valorChave, tipoEnum, conta);
+        ChavePix chave = new ChavePix(valorChave, tipo, conta);
         conta.getCliente().adicionarChavePix(chave);
-        System.out.println("[✓] Chave Pix '" + valorChave + "' cadastrada com sucesso!");
+        System.out.println("\n Chave PIX (" + valorChave + ") cadastrada com sucesso!");
     }
 
     private void realizarPix() {
-        System.out.println("\n--- Transferência PIX ---");
-        System.out.print("Número da Conta Origem: ");
-        Conta origem = banco.buscarContaPorNumero(scanner.nextLine().trim());
+        System.out.println("\n--- ⚡ PAGAMENTO / TRANSFERÊNCIA PIX ---");
+        System.out.print("Número da sua conta (ORIGEM): ");
+        Conta origem = banco.buscarConta(scanner.nextLine());
 
         if (origem == null) {
-            System.out.println("[!] Conta de origem não encontrada.");
+            System.out.println("\n Conta de origem não encontrada.");
             return;
         }
 
-        System.out.print("Informe a Chave Pix do Destinatário: ");
-        String chave = scanner.nextLine().trim();
-        Conta destino = banco.buscarContaPorChavePix(chave);
-
-        if (destino == null) {
-            System.out.println("[!] Nenhuma conta encontrada para a Chave Pix informada.");
-            return;
-        }
-
-        if (origem.getNumero().equalsIgnoreCase(destino.getNumero())) {
-            System.out.println("[!] ERRO: Não é possível fazer PIX para a própria conta!");
-            return;
-        }
+        System.out.print("Digite a chave PIX do DESTINATÁRIO: ");
+        String chave = scanner.nextLine();
 
         System.out.print("Valor do PIX: R$ ");
+        double valor = Double.parseDouble(scanner.nextLine());
+
+        // Busca o cliente/conta vinculada à chave
+        Conta destino = null;
+        for (Conta c : banco.getContas()) {
+            if (c.getCliente() != null && c.getCliente().getChavesPix() != null) {
+                for (ChavePix cp : c.getCliente().getChavesPix()) {
+                    if (cp.getValor().equalsIgnoreCase(chave)) {
+                        destino = cp.getConta();
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (destino == null) {
+            System.out.println("\n Chave PIX não encontrada no sistema.");
+            return;
+        }
+
         try {
-            double valor = Double.parseDouble(scanner.nextLine().trim());
-            new Pix(origem, destino, valor, chave).executar();
-            System.out.println("[✓] PIX de R$ " + String.format("%.2f", valor) + " enviado com sucesso para " + destino.getCliente().getNome() + "!");
+            Pix op = new Pix(origem, destino, valor, chave);
+            op.executar();
+            System.out.println("\n PIX realizado com sucesso para o titular da chave!");
+            System.out.println("Novo saldo origem: R$ " + origem.getSaldo());
         } catch (Exception e) {
-            System.out.println("[!] Erro na operação PIX: " + e.getMessage());
+            System.out.println("\n Erro ao realizar PIX: " + e.getMessage());
         }
     }
 
     private void solicitarCartao() {
-        System.out.println("\n--- Solicitar Cartão ---");
-        System.out.print("CPF do Cliente: ");
-        Cliente cliente = banco.buscarClientePorCpf(scanner.nextLine().trim());
+        System.out.println("\n--- 💳 SOLICITAÇÃO DE CARTÃO ---");
+        System.out.print("CPF do titular: ");
+        Cliente cliente = banco.buscarClientePorCpf(scanner.nextLine());
 
         if (cliente == null) {
-            System.out.println("[!] Cliente não encontrado.");
+            System.out.println("\n Cliente não encontrado.");
             return;
         }
 
-        System.out.println("Tipo de Cartão: 1 - Débito | 2 - Crédito");
-        String tipo = scanner.nextLine().trim();
+        System.out.println("Qual cartão deseja solicitar?");
+        System.out.println("1. Cartão de Crédito");
+        System.out.println("2. Cartão de Débito");
+        System.out.print("Opção: ");
+        int op = Integer.parseInt(scanner.nextLine());
 
-        if ("2".equals(tipo)) {
+        if (op == 1) {
             CartaoCredito cc = new CartaoCredito("4000 1234 5678 9010", "12/28", "123", 2000.0);
             cliente.adicionarCartao(cc);
-            System.out.println("[✓] Cartão de Crédito aprovado com limite de R$ 2.000,00!");
+            System.out.println("\n Cartão de Crédito com limite de R$ 2000,00 gerado com sucesso!");
         } else {
             CartaoDebito cd = new CartaoDebito("5000 1234 5678 9010", "12/28", "321");
             cliente.adicionarCartao(cd);
-            System.out.println("[✓] Cartão de Débito gerado com sucesso!");
+            System.out.println("\n Cartão de Débito gerado e vinculado ao cliente!");
         }
     }
 
     private void solicitarEmprestimo() {
-        System.out.println("\n--- Empréstimo Bancário ---");
+        System.out.println("\n--- 🏦 EMPRÉSTIMO BANCÁRIO ---");
         System.out.print("Número da Conta: ");
-        Conta conta = banco.buscarContaPorNumero(scanner.nextLine().trim());
+        Conta conta = banco.buscarConta(scanner.nextLine());
 
         if (conta == null) {
-            System.out.println("[!] Conta não encontrada.");
+            System.out.println("\n Conta não encontrada.");
             return;
         }
 
-        System.out.print("Valor do Empréstimo Desejado: R$ ");
-        try {
-            double valor = Double.parseDouble(scanner.nextLine().trim());
-            System.out.print("Quantidade de parcelas (1x a 48x): ");
-            int parcelas = Integer.parseInt(scanner.nextLine().trim());
+        System.out.print("Valor do empréstimo pretendido: R$ ");
+        double valor = Double.parseDouble(scanner.nextLine());
 
-            Emprestimo emp = new Emprestimo(conta, valor, parcelas);
-            emp.aprovar();
-            conta.depositar(valor);
+        System.out.print("Quantidade de parcelas: ");
+        int parcelas = Integer.parseInt(scanner.nextLine());
 
-            System.out.println("[✓] Empréstimo de R$ " + String.format("%.2f", valor) + " APROVADO e creditado na conta!");
-        } catch (Exception e) {
-            System.out.println("[!] Erro na solicitação: " + e.getMessage());
+        Emprestimo emp = new Emprestimo(conta, valor, parcelas);
+        System.out.println("\n Solicitando aprovação com o gerente...");
+        emp.aprovar(gerentePadrao);
+
+        if (emp.isAprovado()) {
+            try {
+                conta.depositar(valor);
+                System.out.println("\n Empréstimo APROVADO pelo Gerente " + gerentePadrao.getNome() + "!");
+                System.out.println("R$ " + valor + " foram creditados no seu saldo. Saldo Atual: R$ " + conta.getSaldo());
+            } catch (Exception e) {
+                System.out.println("Erro ao depositar empréstimo: " + e.getMessage());
+            }
         }
     }
 
-    private void consultarSaldo() {
-        System.out.print("\nNúmero da Conta: ");
-        Conta conta = banco.buscarContaPorNumero(scanner.nextLine().trim());
+    private void consultarExtrato() {
+        System.out.println("\n--- 📋 CONSULTA DE SALDO E DADOS DA CONTA ---");
+        System.out.print("Número da Conta: ");
+        Conta conta = banco.buscarConta(scanner.nextLine());
 
-        if (conta != null) {
-            Cliente c = conta.getCliente();
-            System.out.println("\n=================================");
-            System.out.println("       EXTRATO E DADOS         ");
-            System.out.println("=================================");
-            System.out.println("Titular: " + c.getNome() + " (CPF: " + c.getCpf() + ")");
-            System.out.println("Número da Conta: " + conta.getNumero() + " (" + conta.getClass().getSimpleName() + ")");
-            System.out.println("Saldo Atual: R$ " + String.format("%.2f", conta.getSaldo()));
-            
-            if (c.getChavesPix() != null && !c.getChavesPix().isEmpty()) {
-                System.out.println("\nChaves Pix do Cliente:");
-                for (ChavePix cp : c.getChavesPix()) {
-                    System.out.println(" - " + cp.getTipo() + ": " + cp.getValor());
+        if (conta == null) {
+            System.out.println("\n Conta não encontrada.");
+            return;
+        }
+
+        System.out.println("==========================================");
+        System.out.println("Titular: " + conta.getCliente().getNome());
+        System.out.println("CPF: " + conta.getCliente().getCpf());
+        System.out.println("Número da Conta: " + conta.getNumero());
+        System.out.println("Tipo da Conta: " + conta.getClass().getSimpleName());
+        System.out.println("Saldo Atual: R$ " + conta.getSaldo());
+        System.out.println("Conta Bloqueada: " + (conta.isBloqueada() ? "SIM" : "NÃO"));
+
+        Cliente c = conta.getCliente();
+        if (c.getChavesPix() != null && !c.getChavesPix().isEmpty()) {
+            System.out.println("\nChaves Pix Cadastradas:");
+            for (ChavePix cp : c.getChavesPix()) {
+                System.out.println(" - " + cp.getTipo() + ": " + cp.getValor());
+            }
+        }
+        System.out.println("==========================================");
+    }
+
+    private void areaGerente() {
+        System.out.println("\n==========================================");
+        System.out.println("      👔 PAINEL ADMINISTRATIVO DO GERENTE   ");
+        System.out.println("==========================================");
+        System.out.println("Gerente Responsável: " + gerentePadrao.getNome());
+        System.out.println("Matrícula: " + gerentePadrao.getMatricula());
+        System.out.println("1. Relatório Geral (Clientes, Contas e Saldos)");
+        System.out.println("2. Bloquear / Desbloquear Conta de Cliente");
+        System.out.print("Escolha uma opção: ");
+        
+        int op = Integer.parseInt(scanner.nextLine());
+        if (op == 1) {
+            System.out.println("\n--- RELATÓRIO DE CONTAS NO BANCO ---");
+            if (banco.getContas().isEmpty()) {
+                System.out.println("Nenhuma conta registrada até o momento.");
+            } else {
+                for (Conta c : banco.getContas()) {
+                    System.out.println("• Conta: " + c.getNumero() + " | Tipo: " + c.getClass().getSimpleName() + 
+                                       " | Cliente: " + c.getCliente().getNome() + " (CPF: " + c.getCliente().getCpf() + ")" +
+                                       " | Saldo: R$ " + c.getSaldo() + " | Bloqueada: " + c.isBloqueada());
                 }
             }
-            System.out.println("=================================");
+        } else if (op == 2) {
+            System.out.print("Digite o número da conta que deseja alterar o status: ");
+            Conta c = banco.buscarConta(scanner.nextLine());
+            if (c != null) {
+                c.setBloqueada(!c.isBloqueada());
+                System.out.println("\n Status atualizado! A conta " + c.getNumero() + " agora está: " + 
+                                   (c.isBloqueada() ? "BLOQUEADA 🚫" : "DESBLOQUEADA 🟢"));
+            } else {
+                System.out.println("\n Conta não encontrada.");
+            }
         } else {
-            System.out.println("[!] Conta não encontrada.");
+            System.out.println("\n Opção inválida do gerente.");
         }
     }
 }
