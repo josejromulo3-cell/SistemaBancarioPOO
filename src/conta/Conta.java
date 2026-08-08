@@ -4,12 +4,13 @@ import cliente.Cliente;
 import excecao.ContaBloqueadaException;
 import excecao.SaldoInsuficienteException;
 import excecao.ValorInvalidoException;
+import interfaces.Transferivel;
 import operacao.Operacao;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Conta {
+public abstract class Conta implements Transferivel {
     protected String numero;
     protected double saldo;
     protected Cliente cliente;
@@ -26,37 +27,14 @@ public abstract class Conta {
         this.operacoes = new ArrayList<>();
     }
 
-    public String getNumero() {
-        return numero;
-    }
-
-    public double getSaldo() {
-        return saldo;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public boolean isBloqueada() {
-        return bloqueada;
-    }
-
-    public void setBloqueada(boolean bloqueada) {
-        this.bloqueada = bloqueada;
-    }
-
-    public boolean isAtiva() {
-        return ativa;
-    }
-
-    public void setAtiva(boolean ativa) {
-        this.ativa = ativa;
-    }
-
-    public List<Operacao> getOperacoes() {
-        return operacoes;
-    }
+    public String getNumero() { return numero; }
+    public double getSaldo() { return saldo; }
+    public Cliente getCliente() { return cliente; }
+    public boolean isBloqueada() { return bloqueada; }
+    public void setBloqueada(boolean bloqueada) { this.bloqueada = bloqueada; }
+    public boolean isAtiva() { return ativa; }
+    public void setAtiva(boolean ativa) { this.ativa = ativa; }
+    public List<Operacao> getOperacoes() { return operacoes; }
 
     public void adicionarOperacao(Operacao operacao) {
         if (operacao != null) {
@@ -65,32 +43,21 @@ public abstract class Conta {
     }
 
     public void depositar(double valor) throws ValorInvalidoException, ContaBloqueadaException {
-        if (isBloqueada() || !isAtiva()) {
-            throw new ContaBloqueadaException("Não é possível depositar: Conta está inativa ou bloqueada.");
-        }
-        if (valor <= 0) {
-            throw new ValorInvalidoException("O valor do depósito deve ser maior que zero.");
-        }
+        if (isBloqueada() || !isAtiva()) throw new ContaBloqueadaException("Conta inativa/bloqueada.");
+        if (valor <= 0) throw new ValorInvalidoException("Valor deve ser maior que zero.");
         this.saldo += valor;
     }
 
     public void sacar(double valor) throws SaldoInsuficienteException, ValorInvalidoException, ContaBloqueadaException {
-        if (isBloqueada() || !isAtiva()) {
-            throw new ContaBloqueadaException("Não é possível sacar: Conta está inativa ou bloqueada.");
-        }
-        if (valor <= 0) {
-            throw new ValorInvalidoException("O valor do saque deve ser maior que zero.");
-        }
-        if (saldo < valor) {
-            throw new SaldoInsuficienteException("Saldo insuficiente para realizar o saque.", saldo);
-        }
+        if (isBloqueada() || !isAtiva()) throw new ContaBloqueadaException("Conta inativa/bloqueada.");
+        if (valor <= 0) throw new ValorInvalidoException("Valor do saque deve ser maior que zero.");
+        if (saldo < valor) throw new SaldoInsuficienteException("Saldo insuficiente.", saldo);
         this.saldo -= valor;
     }
 
+    @Override
     public void transferir(Conta destino, double valor) throws SaldoInsuficienteException, ValorInvalidoException, ContaBloqueadaException {
-        if (destino == null) {
-            throw new ValorInvalidoException("Conta destino inválida.");
-        }
+        if (destino == null) throw new ValorInvalidoException("Conta destino inválida.");
         this.sacar(valor);
         destino.depositar(valor);
     }

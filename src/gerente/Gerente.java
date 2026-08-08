@@ -1,38 +1,22 @@
 package gerente;
 
+import interfaces.Autenticavel;
 import pessoa.Pessoa;
-import emprestimo.Emprestimo;
 
-/**
- * Representa um Gerente do banco.
- * Herda de Pessoa e adiciona atributos e responsabilidades de gestão.
- * 
- * Fonte: Loan Management System (https://github.com/KooWeiHao/loan-management-system)
- */
-public class Gerente extends Pessoa {
+public class Gerente extends Pessoa implements Autenticavel {
     private String matricula;
+    private String senha;
 
-    // Construtor
     public Gerente(String nome, String cpf, String email, String telefone, String matricula) {
         super(nome, cpf, email, telefone);
         this.matricula = matricula;
+        this.senha = "admin123";
     }
 
-    // Método de negócio para aprovação de empréstimo (será detalhado na Issue #7)
-    public boolean aprovarEmprestimo(Emprestimo emprestimo) {
-        if (emprestimo != null) {
-            emprestimo.aprovar(this);
-            return true;
-        }
-        return false;
-    }
+    public String getMatricula() { return matricula; }
 
-    // Getter e Setter
-    public String getMatricula() {
-        return matricula;
-    }
-
-    public void setMatricula(String matricula) {
-        this.matricula = matricula;
+    @Override
+    public boolean autenticar(String senha) {
+        return this.senha != null && this.senha.equals(senha);
     }
 }

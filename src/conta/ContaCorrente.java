@@ -4,8 +4,9 @@ import cliente.Cliente;
 import excecao.ContaBloqueadaException;
 import excecao.SaldoInsuficienteException;
 import excecao.ValorInvalidoException;
+import interfaces.Tributavel;
 
-public class ContaCorrente extends Conta {
+public class ContaCorrente extends Conta implements Tributavel {
     private double limite;
 
     public ContaCorrente(String numero, Cliente cliente) {
@@ -13,30 +14,19 @@ public class ContaCorrente extends Conta {
         this.limite = 500.0;
     }
 
-    public ContaCorrente(String numero, Cliente cliente, double limite) {
-        super(numero, cliente);
-        this.limite = limite;
-    }
+    public double getLimite() { return limite; }
 
-    public double getLimite() {
-        return limite;
-    }
-
-    public void setLimite(double limite) {
-        this.limite = limite;
+    @Override
+    public double calculaTributo() {
+        // Exemplo: 1% de taxa de manutenção do saldo
+        return this.saldo * 0.01;
     }
 
     @Override
     public void sacar(double valor) throws SaldoInsuficienteException, ValorInvalidoException, ContaBloqueadaException {
-        if (isBloqueada() || !isAtiva()) {
-            throw new ContaBloqueadaException("Conta inativa ou bloqueada.");
-        }
-        if (valor <= 0) {
-            throw new ValorInvalidoException("O valor do saque deve ser maior que zero.");
-        }
-        if (saldo + limite < valor) {
-            throw new SaldoInsuficienteException("Saldo e limite insuficientes para realizar o saque.", saldo + limite);
-        }
+        if (isBloqueada() || !isAtiva()) throw new ContaBloqueadaException("Conta inativa ou bloqueada.");
+        if (valor <= 0) throw new ValorInvalidoException("Valor de saque inválido.");
+        if (saldo + limite < valor) throw new SaldoInsuficienteException("Saldo e limite insuficientes.", saldo + limite);
         this.saldo -= valor;
     }
 }

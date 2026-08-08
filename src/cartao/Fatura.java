@@ -1,27 +1,42 @@
 package cartao;
 
-/**
- * Representa a fatura do cartão de crédito.
- */
-public class Fatura {
+import interfaces.Pagavel;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Fatura implements Pagavel {
     private double valorTotal;
     private boolean paga;
+    private List<String> itens;
 
     public Fatura() {
         this.valorTotal = 0.0;
         this.paga = false;
+        this.itens = new ArrayList<>();
     }
 
-    public void adicionarDespesa(double valor) {
-        this.valorTotal += valor;
-        this.paga = false;
+    public void adicionarLancamento(String descricao, double valor) {
+        itens.add(descricao + " - R$ " + String.format("%.2f", valor));
+        valorTotal += valor;
+        paga = false;
     }
 
-    public void quitar() {
-        this.valorTotal = 0.0;
+    @Override
+    public double getValorAPagar() {
+        return valorTotal;
+    }
+
+    @Override
+    public void processarPagamento() {
         this.paga = true;
+        this.valorTotal = 0.0;
     }
 
-    public double getValorTotal() { return valorTotal; }
-    public boolean isPaga() { return paga; }
+    public boolean isPaga() {
+        return paga;
+    }
+
+    public List<String> getItens() {
+        return itens;
+    }
 }
