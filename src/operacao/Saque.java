@@ -5,9 +5,6 @@ import excecao.ContaBloqueadaException;
 import excecao.SaldoInsuficienteException;
 import excecao.ValorInvalidoException;
 
-/**
- * Implementação da operação de Saque.
- */
 public class Saque extends Operacao {
     private Conta contaOrigem;
 

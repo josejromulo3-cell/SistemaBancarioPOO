@@ -4,9 +4,6 @@ import conta.Conta;
 import excecao.ContaBloqueadaException;
 import excecao.ValorInvalidoException;
 
-/**
- * Implementação da operação de Depósito.
- */
 public class Deposito extends Operacao {
     private Conta contaDestino;
 

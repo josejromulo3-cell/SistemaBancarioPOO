@@ -10,7 +10,7 @@ public class ContaPoupanca extends Conta {
         this.taxaRendimento = 0.005;
     }
 
-    // Remova o @Override daqui
+    
     public void renderJuros() {
         this.saldo += this.saldo * taxaRendimento;
     }

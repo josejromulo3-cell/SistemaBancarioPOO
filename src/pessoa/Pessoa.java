@@ -1,12 +1,5 @@
 package pessoa;
 
-/**
- * Classe abstrata base para representação de pessoas no sistema.
- * Aplica encapsulamento e serve como superclasse para Cliente e Gerente.
- * 
- * Fonte: Bank Program - Inheritance and Abstraction
- * (https://github.com/Jon-Peppinck/javaBankInheritAbstract)
- */
 public abstract class Pessoa {
     private String nome;
     private String cpf;

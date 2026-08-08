@@ -58,29 +58,27 @@ public class SistemaBancario {
     }
 
     private void exibirMenu() {
-        System.out.println("\n==================================================");
-        System.out.println("            🏦 SISTEMA BANCÁRIO POO 🏦           ");
-        System.out.println("==================================================");
-        System.out.println("1. Cadastrar Cliente");
-        System.out.println("2. Criar Conta (Número Gerado Automático 🎲)");
+        System.out.println("             SISTEMA BANCÁRIO POO            ");
+         System.out.println("1. Cadastrar Cliente");
+        System.out.println("2. Criar Conta (Número Gerado Automático )");
         System.out.println("3. Realizar Depósito");
         System.out.println("4. Realizar Saque");
         System.out.println("5. Realizar Transferência Tradicional");
         System.out.println("6. Cadastrar Chave PIX");
         System.out.println("7. Realizar PIX (Débito em Conta)");
-        System.out.println("8. Realizar PIX no Crédito (Cartão de Crédito 💳)");
+        System.out.println("8. Realizar PIX no Crédito (Cartão de Crédito )");
         System.out.println("9. Solicitar Cartão de Crédito");
         System.out.println("10. Consultar Fatura do Cartão de Crédito");
         System.out.println("11. Solicitar Empréstimo (Aprovação via Gerente)");
-        System.out.println("12. Consultar Saldo, Extrato e Dados da Conta 📋");
-        System.out.println("13. Área do Gerente (Painel Administrativo) 👔");
+        System.out.println("12. Consultar Saldo, Extrato e Dados da Conta ");
+        System.out.println("13. Área do Gerente (Painel Administrativo) ");
         System.out.println("0. Sair");
         System.out.println("--------------------------------------------------");
         System.out.print("Escolha uma opção: ");
     }
 
     private void cadastrarCliente() {
-        System.out.println("\n--- 👤 CADASTRO DE CLIENTE ---");
+        System.out.println("\n--- CADASTRO DE CLIENTE ---");
         System.out.print("Nome completo: ");
         String nome = scanner.nextLine().trim();
         System.out.print("CPF: ");
@@ -103,7 +101,7 @@ public class SistemaBancario {
     }
 
     private void criarConta() {
-        System.out.println("\n--- 💳 CRIAÇÃO DE CONTA ---");
+        System.out.println("\n---  CRIAÇÃO DE CONTA ---");
         System.out.print("Digite o CPF do titular cadastrado: ");
         String cpf = scanner.nextLine().trim();
         Cliente cliente = banco.buscarClientePorCpf(cpf);
@@ -141,7 +139,7 @@ public class SistemaBancario {
     }
 
     private void realizarDeposito() {
-        System.out.println("\n--- 💵 DEPÓSITO ---");
+        System.out.println("\n---  DEPÓSITO ---");
         System.out.print("Número da conta: ");
         Conta conta = banco.buscarConta(scanner.nextLine().trim());
         if (conta == null) {
@@ -163,7 +161,7 @@ public class SistemaBancario {
     }
 
     private void realizarSaque() {
-        System.out.println("\n--- 🏧 SAQUE ---");
+        System.out.println("\n---  SAQUE ---");
         System.out.print("Número da conta: ");
         Conta conta = banco.buscarConta(scanner.nextLine().trim());
         if (conta == null) {
@@ -185,7 +183,7 @@ public class SistemaBancario {
     }
 
     private void realizarTransferencia() {
-        System.out.println("\n--- 🔄 TRANSFERÊNCIA TRADICIONAL ---");
+        System.out.println("\n  TRANSFERÊNCIA TRADICIONAL ");
         System.out.print("Digite o número da conta de ORIGEM: ");
         Conta origem = banco.buscarConta(scanner.nextLine().trim());
         if (origem == null) {
@@ -214,7 +212,7 @@ public class SistemaBancario {
     }
 
     private void cadastrarChavePix() {
-        System.out.println("\n--- 🔑 CADASTRO DE CHAVE PIX ---");
+        System.out.println("\n CADASTRO DE CHAVE PIX ");
         System.out.print("Número da conta vinculada: ");
         Conta conta = banco.buscarConta(scanner.nextLine().trim());
         if (conta == null) {
@@ -236,7 +234,7 @@ public class SistemaBancario {
     }
 
     private void realizarPix() {
-        System.out.println("\n--- ⚡ PIX (DÉBITO EM CONTA) ---");
+        System.out.println("\n  PIX (DÉBITO EM CONTA) ");
         System.out.print("Digite o número da CONTA DE ORIGEM: ");
         Conta origem = banco.buscarConta(scanner.nextLine().trim());
         if (origem == null) {
@@ -274,7 +272,7 @@ public class SistemaBancario {
     }
 
     private void realizarPixNoCredito() {
-        System.out.println("\n--- 💳 PIX NO CRÉDITO ---");
+        System.out.println("\n PIX NO CRÉDITO ");
         System.out.print("Digite o CPF do Titular do Cartão: ");
         Cliente cliente = banco.buscarClientePorCpf(scanner.nextLine().trim());
 
@@ -324,7 +322,7 @@ public class SistemaBancario {
     }
 
     private void solicitarCartao() {
-        System.out.println("\n--- 💳 SOLICITAR CARTÃO DE CRÉDITO ---");
+        System.out.println("\n SOLICITAR CARTÃO DE CRÉDITO ");
         System.out.print("Digite o CPF do Titular: ");
         Cliente cliente = banco.buscarClientePorCpf(scanner.nextLine().trim());
 
@@ -363,7 +361,7 @@ public class SistemaBancario {
     }
 
     private void consultarFatura() {
-        System.out.println("\n--- 📄 CONSULTA DE FATURA ---");
+        System.out.println("\n CONSULTA DE FATURA ");
         System.out.print("CPF do Titular: ");
         Cliente cliente = banco.buscarClientePorCpf(scanner.nextLine().trim());
 
@@ -376,10 +374,10 @@ public class SistemaBancario {
         for (Cartao c : cliente.getCartoes()) {
             if (c instanceof CartaoCredito cc) {
                 encontrouCartao = true;
-                System.out.println("\n💳 Cartão de Crédito Final: " + cc.getNumero());
+                System.out.println("\n Cartão de Crédito Final: " + cc.getNumero());
                 System.out.println(" Limite Total: R$ " + String.format("%.2f", cc.getLimite()));
                 System.out.println(" Limite Disponível: R$ " + String.format("%.2f", cc.getLimiteDisponivel()));
-                System.out.println("=== LANÇAMENTOS NA FATURA ===");
+                System.out.println(" LANÇAMENTOS NA FATURA ");
                 if (cc.getFatura().getItens().isEmpty()) {
                     System.out.println(" (Nenhum lançamento registrado nesta fatura)");
                 } else {
@@ -387,7 +385,6 @@ public class SistemaBancario {
                         System.out.println("  • " + item);
                     }
                 }
-                System.out.println("----------------------------------------");
                 System.out.println(" TOTAL A PAGAR NA FATURA: R$ " + String.format("%.2f", cc.getFatura().getValorAPagar()));
             }
         }
@@ -398,7 +395,7 @@ public class SistemaBancario {
     }
 
     private void solicitarEmprestimo() {
-        System.out.println("\n--- 🏦 SOLICITAÇÃO DE EMPRÉSTIMO ---");
+        System.out.println("\nSOLICITAÇÃO DE EMPRÉSTIMO");
         System.out.print("Digite o número da Conta: ");
         Conta conta = banco.buscarConta(scanner.nextLine().trim());
 
@@ -420,7 +417,7 @@ public class SistemaBancario {
     }
 
     private void consultarExtrato() {
-        System.out.println("\n--- 📋 DADOS DA CONTA E EXTRATO COMPLETO ---");
+        System.out.println("\n DADOS DA CONTA E EXTRATO COMPLETO ");
         System.out.print("Digite o número da Conta: ");
         Conta conta = banco.buscarConta(scanner.nextLine().trim());
 
@@ -430,18 +427,15 @@ public class SistemaBancario {
         }
 
         Cliente titular = conta.getCliente();
-
-        System.out.println("==================================================");
-        System.out.println(" 👤 DADOS DO TITULAR");
+        System.out.println(" DADOS DO TITULAR");
         System.out.println("   Nome: " + titular.getNome());
         System.out.println("   CPF: " + titular.getCpf());
         System.out.println("   E-mail: " + titular.getEmail());
         System.out.println("   Telefone: " + titular.getTelefone());
-        System.out.println("--------------------------------------------------");
-        System.out.println(" 💳 DADOS DA CONTA");
+        System.out.println(" DADOS DA CONTA");
         System.out.println("   Número da Conta: " + conta.getNumero());
         System.out.println("   Tipo: " + conta.getClass().getSimpleName());
-        System.out.println("   Status: " + (conta.isBloqueada() ? "🔴 BLOQUEADA" : "🟢 ATIVA"));
+        System.out.println("   Status: " + (conta.isBloqueada() ? " BLOQUEADA" : " ATIVA"));
         System.out.println("   Saldo Atual: R$ " + String.format("%.2f", conta.getSaldo()));
 
         if (conta instanceof ContaCorrente cc) {
@@ -449,7 +443,7 @@ public class SistemaBancario {
         }
 
         System.out.println("--------------------------------------------------");
-        System.out.println(" 🔑 CHAVES PIX CADASTRADAS:");
+        System.out.println("  CHAVES PIX CADASTRADAS:");
         if (titular.getChavesPix().isEmpty()) {
             System.out.println("   (Nenhuma chave Pix vinculada)");
         } else {
@@ -460,8 +454,7 @@ public class SistemaBancario {
             }
         }
 
-        System.out.println("--------------------------------------------------");
-        System.out.println(" 📜 HISTÓRICO DE OPERAÇÕES (EXTRATO):");
+        System.out.println(" HISTÓRICO DE OPERAÇÕES (EXTRATO):");
         if (conta.getOperacoes().isEmpty()) {
             System.out.println("   (Nenhuma operação realizada nesta conta até o momento)");
         } else {
@@ -469,11 +462,10 @@ public class SistemaBancario {
                 System.out.println("   • " + op.getDescricao() + " | Valor: R$ " + String.format("%.2f", op.getValor()));
             }
         }
-        System.out.println("==================================================");
     }
 
     private void areaGerente() {
-        System.out.print("\n🔒 Digite a senha do Gerente (padrão: admin123): ");
+        System.out.print("\n Digite a senha do Gerente (padrão: admin123): ");
         String senha = scanner.nextLine().trim();
 
         if (!gerentePadrao.autenticar(senha)) {
@@ -483,16 +475,15 @@ public class SistemaBancario {
 
         int subOpcao = -1;
         while (subOpcao != 0) {
-            System.out.println("\n==================================================");
-            System.out.println("         👔 PAINEL ADMINISTRATIVO DO GERENTE       ");
+            System.out.println("          PAINEL ADMINISTRATIVO DO GERENTE       ");
             System.out.println("         Gerente: " + gerentePadrao.getNome());
-            System.out.println("==================================================");
+            
             System.out.println("1. Aprovar/Recusar Empréstimos Pendentes (" + contarEmprestimosPendentes() + " pendentes)");
             System.out.println("2. Aprovar/Recusar Cartões de Crédito Pendentes (" + contarCartoesPendentes() + " pendentes)");
             System.out.println("3. Bloquear / Desbloquear Conta");
             System.out.println("4. Relatório Geral de Contas do Banco");
             System.out.println("0. Voltar ao Menu Principal");
-            System.out.println("--------------------------------------------------");
+            
             System.out.print("Escolha uma opção: ");
 
             try {
@@ -520,7 +511,7 @@ public class SistemaBancario {
     }
 
     private void gerenciarEmprestimos() {
-        System.out.println("\n--- 📝 GERENCIAR EMPRÉSTIMOS PENDENTES ---");
+        System.out.println("\nGERENCIAR EMPRÉSTIMOS PENDENTES ");
         var pendentes = banco.getEmprestimos().stream()
                 .filter(e -> e.getStatus() == Emprestimo.StatusEmprestimo.PENDENTE)
                 .toList();
@@ -551,7 +542,7 @@ public class SistemaBancario {
     }
 
     private void gerenciarCartoes() {
-        System.out.println("\n--- 💳 GERENCIAR CARTÕES PENDENTES ---");
+        System.out.println("\n GERENCIAR CARTÕES PENDENTES ");
         var pendentes = banco.getSolicitacoesCartao().stream()
                 .filter(s -> s.getStatus() == SolicitacaoCartao.StatusSolicitacao.PENDENTE)
                 .toList();
@@ -578,7 +569,7 @@ public class SistemaBancario {
     }
 
     private void alterarStatusConta() {
-        System.out.println("\n--- 🔒 BLOQUEAR / DESBLOQUEAR CONTA ---");
+        System.out.println("\n BLOQUEAR / DESBLOQUEAR CONTA ");
         System.out.print("Digite o número da Conta: ");
         Conta conta = banco.buscarConta(scanner.nextLine().trim());
 
@@ -601,7 +592,7 @@ public class SistemaBancario {
     }
 
     private void exibirRelatorioBanco() {
-        System.out.println("\n--- 📊 RELATÓRIO GERAL DO BANCO ---");
+        System.out.println("\n RELATÓRIO GERAL DO BANCO ");
         System.out.println("Total de Clientes Cadastrados: " + banco.getClientes().size());
         System.out.println("Total de Contas Abertas: " + banco.getContas().size());
 
@@ -612,7 +603,7 @@ public class SistemaBancario {
                     " | Tipo: " + c.getClass().getSimpleName() + " | Saldo: R$ " + String.format("%.2f", c.getSaldo()) +
                     " | Status: " + (c.isBloqueada() ? "BLOQUEADA" : "ATIVA"));
         }
-        System.out.println("--------------------------------------------------");
+        
         System.out.println(" TOTAL CUSTODIADO NO BANCO: R$ " + String.format("%.2f", saldoTotal));
     }
 

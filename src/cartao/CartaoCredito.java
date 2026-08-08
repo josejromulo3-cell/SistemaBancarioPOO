@@ -38,7 +38,7 @@ public class CartaoCredito extends Cartao {
 
     public void realizarPixNoCredito(String chaveDestino, double valor) throws SaldoInsuficienteException, ValorInvalidoException {
         if (valor <= 0) throw new ValorInvalidoException("Valor do Pix deve ser maior que zero.");
-        double taxa = valor * 0.03; // 3% de taxa de conveniência no Pix Crédito
+        double taxa = valor * 0.03; 
         double valorTotalPix = valor + taxa;
 
         if (valorTotalPix > limiteDisponivel) {

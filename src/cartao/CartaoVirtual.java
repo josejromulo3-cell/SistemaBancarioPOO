@@ -3,9 +3,6 @@ package cartao;
 import cliente.Cliente;
 import conta.Conta;
 
-/**
- * Cartão Virtual temporário/dinâmico para transações online.
- */
 public class CartaoVirtual extends Cartao {
     private boolean temporario;
 

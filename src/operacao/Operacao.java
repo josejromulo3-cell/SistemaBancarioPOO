@@ -2,9 +2,7 @@ package operacao;
 
 import java.time.LocalDateTime;
 
-/**
- * Classe abstrata base para representação de operações financeiras.
- */
+
 public abstract class Operacao {
     protected LocalDateTime dataHora;
     protected double valor;

@@ -18,7 +18,7 @@ public class ContaCorrente extends Conta implements Tributavel {
 
     @Override
     public double calculaTributo() {
-        // Exemplo: 1% de taxa de manutenção do saldo
+       
         return this.saldo * 0.01;
     }
 

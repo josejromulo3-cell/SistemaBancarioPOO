@@ -5,9 +5,6 @@ import excecao.ContaBloqueadaException;
 import excecao.SaldoInsuficienteException;
 import excecao.ValorInvalidoException;
 
-/**
- * Implementação da operação de Pagamento de Boleto.
- */
 public class PagamentoBoleto extends Operacao {
     private Conta contaOrigem;
     private String codigoBarras;

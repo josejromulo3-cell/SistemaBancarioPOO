@@ -2,9 +2,6 @@ package util;
 
 import java.util.Random;
 
-/**
- * Utilitário para geração de números de cartão, CVV e datas de validade.
- */
 public class GeradorCartao {
     private static final Random random = new Random();
 
@@ -22,7 +19,7 @@ public class GeradorCartao {
 
     public static String gerarValidade() {
         int mes = 1 + random.nextInt(12);
-        int ano = 28 + random.nextInt(5); // Validade simulada
+        int ano = 28 + random.nextInt(5); 
         return String.format("%02d/%d", mes, ano);
     }
 }
