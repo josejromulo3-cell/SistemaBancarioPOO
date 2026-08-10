@@ -6,7 +6,7 @@ public abstract class Pessoa {
     private String email;
     private String telefone;
 
-    // Construtor parametrizado
+    
     public Pessoa(String nome, String cpf, String email, String telefone) {
         this.nome = nome;
         this.cpf = cpf;
@@ -14,7 +14,7 @@ public abstract class Pessoa {
         this.telefone = telefone;
     }
 
-    // Getters e Setters (Encapsulamento)
+    
     public String getNome() {
         return nome;
     }

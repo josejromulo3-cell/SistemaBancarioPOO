@@ -363,21 +363,34 @@ public class SistemaBancario {
     }
 
 private void gerarCartaoVirtual() {
-        System.out.println("GERAR CARTÃO VIRTUAL");
+        System.out.println("SOLICITAR CARTAO VIRTUAL");
         System.out.print("Digite o CPF do Titular: ");
         Cliente cliente = banco.buscarClientePorCpf(scanner.nextLine().trim());
 
         if (cliente == null) {
-            System.out.println("Erro: Cliente não encontrado.");
+            System.out.println("Erro: Cliente nao encontrado.");
             return;
         }
 
         if (cliente.getContas().isEmpty()) {
-            System.out.println("Erro: Você precisa possuir uma conta ativa para gerar um Cartão Virtual.");
+            System.out.println("Erro: Voce precisa possuir uma conta ativa para solicitar um Cartao Virtual.");
             return;
         }
 
-        System.out.print("Informe o limite desejado para o Cartão Virtual: R$ ");
+        System.out.println("Contas vinculadas ao cliente:");
+        for (Conta c : cliente.getContas()) {
+            System.out.println("Conta Numero: " + c.getNumero());
+        }
+
+        System.out.print("Digite o numero da conta para vincular o cartao virtual: ");
+        Conta conta = banco.buscarConta(scanner.nextLine().trim());
+
+        if (conta == null || !cliente.getContas().contains(conta)) {
+            System.out.println("Erro: Conta invalida ou nao pertence a este cliente.");
+            return;
+        }
+
+        System.out.print("Informe o limite desejado para o Cartao Virtual: R$ ");
         double limite = Double.parseDouble(scanner.nextLine().trim());
 
         if (limite <= 0) {
@@ -385,13 +398,15 @@ private void gerarCartaoVirtual() {
             return;
         }
 
-        // Passando 'cliente' e 'limite' para o construtor corrigido
-        CartaoVirtual cartaoVirtual = new CartaoVirtual(cliente, limite);
-        cliente.adicionarCartao(cartaoVirtual);
+        
+        SolicitacaoCartao solicitacao = new SolicitacaoCartao(cliente, conta, limite, true);
+        banco.adicionarSolicitacaoCartao(solicitacao);
 
-        System.out.println("Cartão Virtual gerado com sucesso!");
-        System.out.println(cartaoVirtual);
+        System.out.println("Solicitacao de Cartao Virtual enviada com SUCESSO!");
+        System.out.println("Status: AGUARDANDO APROVACAO DO GERENTE (ID do pedido: #" + solicitacao.getId() + ")");
     }
+
+
 
     private void consultarCartoes() {
         System.out.println("CONSULTAR CARTOES");
@@ -593,7 +608,7 @@ private void gerarCartaoVirtual() {
         }
     }
 
-    private void gerenciarCartoes() {
+   private void gerenciarCartoes() {
         System.out.println("GERENCIAR CARTOES PENDENTES");
         var pendentes = banco.getSolicitacoesCartao().stream()
                 .filter(s -> s.getStatus() == SolicitacaoCartao.StatusSolicitacao.PENDENTE)
@@ -605,8 +620,12 @@ private void gerarCartaoVirtual() {
         }
 
         for (SolicitacaoCartao s : pendentes) {
-            System.out.println("ID: #" + s.getId() + " | Cliente: " + s.getCliente().getNome() +
-                    " | Conta: " + s.getConta().getNumero() + " | Limite Desejado: R$ " + s.getLimiteSolicitado());
+            String tipoCartao = s.isEhVirtual() ? "[CARTAO VIRTUAL]" : "[CARTAO CREDITO FISICO]";
+            System.out.println("ID: #" + s.getId() + " | Tipo: " + tipoCartao +
+                    " | Cliente: " + s.getCliente().getNome() +
+                    " | Conta: " + s.getConta().getNumero() + 
+                    " | Limite Desejado: R$ " + String.format("%.2f", s.getLimiteSolicitado()));
+            
             System.out.print("Deseja APROVAR (A) ou RECUSAR (R)? [A/R]: ");
             String dec = scanner.nextLine().trim();
 
@@ -619,7 +638,6 @@ private void gerarCartaoVirtual() {
             }
         }
     }
-
     private void alterarStatusConta() {
         System.out.println("BLOQUEAR / DESBLOQUEAR CONTA");
         System.out.print("Digite o numero da Conta: ");
