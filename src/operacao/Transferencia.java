@@ -21,7 +21,7 @@ public class Transferencia {
             throw new ValorInvalidoException("Conta de origem ou destino inválida.");
         }
 
-        // Regra de Negócio: Não permite transferência para a própria conta
+        
         if (origem.getNumero().trim().equalsIgnoreCase(destino.getNumero().trim())) {
             throw new ValorInvalidoException("A conta de destino não pode ser igual à conta de origem.");
         }
