@@ -115,9 +115,13 @@ java -cp bin main.Main
 
 ## 📚 Referências
 
-- ALEXANDRE AQUILES. *Banco OO: Exemplo de aplicação em Java aplicando conceitos de POO*. Disponível em: [github.com/alexandreaquiles/banco-oo](https://github.com/alexandreaquiles/banco-oo)
-- DEVMEDIA. *Tratamento de Exceções em Java*. Disponível em: [devmedia.com.br](https://www.devmedia.com.br/tratamento-de-excecoes-em-java/25499)
-- DIO - Digital Innovation One. *Desafio de Projeto: Criando um Banco Digital com Java e POO*. Disponível em: [github.com/digitalinnovationone/dio-desafio-banco-digital-java](https://github.com/digitalinnovationone/dio-desafio-banco-digital-java)
+
+- MANELIMA. dio-Banco-Digital: Desafio: Criando um Banco Digital com Java e Orientação a Objetos. GitHub. Disponível em: https://github.com/Manelima/dio-Banco-Digital. Acesso em: 2026.
+
+- SARAHTAMBALO. dio-desafio-banco-digital-poo-java. GitHub. Disponível em: https://github.com/sarahtambalo/dio-desafio-banco-digital-poo-java. Acesso em: 2026.
+
+- ORACLE. The Java™ Tutorials: Object-Oriented Programming Concepts. Disponível em: https://docs.oracle.com/javase/tutorial/java/concepts/. Acesso em: 2026.
+
 - ORACLE. *Java SE Documentation: Object-Oriented Programming Concepts*. Disponível em: [docs.oracle.com/javase/tutorial/java/concepts](https://docs.oracle.com/javase/tutorial/java/concepts/)
 
 ---
