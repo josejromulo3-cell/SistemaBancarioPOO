@@ -14,7 +14,6 @@ public abstract class Operacao {
         this.descricao = descricao;
     }
 
-    // Método abstrato executado por cada tipo de operação
     public abstract void executar() throws Exception;
 
     public LocalDateTime getDataHora() { return dataHora; }
