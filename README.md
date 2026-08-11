@@ -2,6 +2,7 @@
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![POO](https://img.shields.io/badge/Paradigma-Orientação_a_Objetos-blue?style=for-the-badge)
+
 Projeto acadêmico da disciplina de **Programação Orientada a Objetos** — Universidade Federal da Paraíba (UFPB), Campus I.
 
 Simulação via linha de comando do funcionamento de uma instituição financeira, contemplando clientes, gerentes, contas, cartões, operações financeiras (incluindo Pix) e empréstimos.
